@@ -1,0 +1,396 @@
+{
+  "catalog_version": "1.0",
+  "integration_id": "piphi-network-unifi-protect-access",
+  "coverage_mode": "upstream-surface-accounted-runtime-advertising-gated-by-implementation",
+  "reviewed_at": "2026-09-09",
+  "sources": {
+    "unifi_protect": "https://developer.ui.com/protect",
+    "unifi_connector": "https://developer.ui.com/protect/v7.1.42/connectorget",
+    "homey_reference": "https://homey.app/en-us/app/com.ubnt.unifiprotect/Ubiquiti-UniFi-Protect-and-Access/",
+    "core_camera": "PiPhi Core camera gateway, recording, media, and authorization contracts",
+    "core_vocabulary": "PiPhi Network Core capability and behavior contracts"
+  },
+  "groups": [
+    {
+      "id": "runtime-foundation",
+      "status": "implemented",
+      "scope": [
+        "all-configurations"
+      ],
+      "source_refs": [
+        "core_vocabulary"
+      ],
+      "reason": "The scaffold implements configuration lifecycle, connectivity state, refresh dispatch, and a configuration event.",
+      "state": [
+        "connected"
+      ],
+      "events": [
+        "runtime.config.applied"
+      ],
+      "conditions": [
+        "state_matches"
+      ],
+      "actions": [
+        "refresh"
+      ]
+    },
+    {
+      "id": "console-site-and-applications",
+      "status": "planned",
+      "scope": [
+        "unifi-os-consoles"
+      ],
+      "source_refs": [
+        "unifi_protect",
+        "unifi_connector",
+        "homey_reference"
+      ],
+      "reason": "Console, site, Protect, Access, permissions, versions, and application readiness require API-key-scoped discovery.",
+      "state": [
+        "console_id",
+        "console_name",
+        "site_id",
+        "site_name",
+        "protect_version",
+        "access_version",
+        "console_online",
+        "protect_ready",
+        "access_ready",
+        "timezone",
+        "last_seen_at"
+      ],
+      "events": [
+        "console.online",
+        "console.offline",
+        "application.ready_changed"
+      ],
+      "conditions": [
+        "console_is_online",
+        "application_is_ready"
+      ],
+      "actions": [
+        "resynchronize_console"
+      ]
+    },
+    {
+      "id": "protect-cameras-and-doorbells",
+      "status": "planned",
+      "scope": [
+        "protect-camera-doorbell-and-ai-port-models"
+      ],
+      "source_refs": [
+        "unifi_protect",
+        "homey_reference",
+        "core_camera"
+      ],
+      "reason": "Camera, doorbell, AI Port, live view, privacy, PTZ, audio, snapshot, and device-health fields need model negotiation.",
+      "state": [
+        "camera_online",
+        "camera_recording",
+        "camera_motion",
+        "camera_privacy_mode",
+        "camera_microphone_enabled",
+        "camera_hdr_enabled",
+        "camera_ir_mode",
+        "camera_temperature_c",
+        "camera_last_motion_at",
+        "doorbell_pressed",
+        "doorbell_message",
+        "ptz_position",
+        "ptz_patrol_active",
+        "live_view_count"
+      ],
+      "events": [
+        "camera.motion_started",
+        "camera.motion_ended",
+        "doorbell.pressed",
+        "camera.online",
+        "camera.offline",
+        "camera.privacy_changed"
+      ],
+      "conditions": [
+        "camera_is_online",
+        "camera_is_recording",
+        "motion_is_active",
+        "privacy_mode_is_enabled"
+      ],
+      "actions": [
+        "take_snapshot",
+        "move_ptz_to_preset",
+        "start_ptz_patrol",
+        "stop_ptz_patrol",
+        "set_privacy_mode"
+      ]
+    },
+    {
+      "id": "protect-detections-and-events",
+      "status": "planned",
+      "scope": [
+        "devices-with-smart-detection-support"
+      ],
+      "source_refs": [
+        "unifi_protect",
+        "homey_reference",
+        "core_camera"
+      ],
+      "reason": "Person, vehicle, package, animal, license-plate, face, audio, tamper, and alarm events require stable IDs and Core event mapping.",
+      "state": [
+        "active_detection_count",
+        "last_detection_type",
+        "last_detection_at",
+        "last_detection_zone",
+        "last_license_plate",
+        "last_face_match"
+      ],
+      "events": [
+        "detection.object",
+        "detection.person",
+        "detection.vehicle",
+        "detection.package",
+        "detection.animal",
+        "detection.license_plate",
+        "detection.face",
+        "detection.audio",
+        "camera.tamper"
+      ],
+      "conditions": [
+        "detection_type_is",
+        "detection_zone_is"
+      ],
+      "actions": []
+    },
+    {
+      "id": "access-doors-locks-readers-and-intercoms",
+      "status": "planned",
+      "scope": [
+        "access-hubs-doors-locks-readers-intercoms-and-garage-doors"
+      ],
+      "source_refs": [
+        "homey_reference"
+      ],
+      "reason": "Door position, lock state, request-to-exit, intercom calls, reader mode, credentials, and access decisions require access-policy-aware mapping.",
+      "state": [
+        "door_open",
+        "door_locked",
+        "door_held_open",
+        "door_forced_open",
+        "reader_online",
+        "reader_mode",
+        "intercom_call_active",
+        "garage_door_open",
+        "last_access_result",
+        "last_access_method"
+      ],
+      "events": [
+        "door.opened",
+        "door.closed",
+        "door.forced_open",
+        "door.held_open",
+        "lock.locked",
+        "lock.unlocked",
+        "access.granted",
+        "access.denied",
+        "intercom.rang",
+        "garage.opened",
+        "garage.closed"
+      ],
+      "conditions": [
+        "door_is_open",
+        "door_is_locked",
+        "access_was_granted",
+        "intercom_call_is_active"
+      ],
+      "actions": [
+        "lock_door",
+        "unlock_door",
+        "open_door",
+        "activate_relay"
+      ]
+    },
+    {
+      "id": "alarms-sensors-sirens-lights-and-speakers",
+      "status": "planned",
+      "scope": [
+        "protect-and-access-peripherals"
+      ],
+      "source_refs": [
+        "unifi_protect",
+        "homey_reference"
+      ],
+      "reason": "Alarm hubs, arm profiles, sensors, sirens, lights, speakers, chimes, relays, and fobs need type-specific normalization.",
+      "state": [
+        "alarm_armed",
+        "alarm_profile",
+        "alarm_active",
+        "sensor_open",
+        "sensor_motion",
+        "sensor_temperature_c",
+        "sensor_humidity_percent",
+        "siren_active",
+        "light_on",
+        "light_level_percent",
+        "speaker_volume_percent",
+        "chime_enabled",
+        "relay_active",
+        "fob_battery_percent"
+      ],
+      "events": [
+        "alarm.triggered",
+        "alarm.cleared",
+        "sensor.opened",
+        "sensor.closed",
+        "sensor.motion",
+        "siren.started",
+        "siren.stopped",
+        "fob.pressed"
+      ],
+      "conditions": [
+        "alarm_is_armed",
+        "alarm_is_active",
+        "sensor_is_open",
+        "siren_is_active"
+      ],
+      "actions": [
+        "set_arm_profile",
+        "disarm",
+        "play_siren",
+        "stop_siren",
+        "set_light",
+        "set_speaker_volume",
+        "test_chime"
+      ]
+    },
+    {
+      "id": "nvr-media-and-recording",
+      "status": "planned",
+      "scope": [
+        "protect-nvrs-and-recordable-cameras"
+      ],
+      "source_refs": [
+        "unifi_protect",
+        "core_camera"
+      ],
+      "reason": "NVR capacity, recording health, RTSPS streams, snapshots, talkback, clips, and retention must use Core-owned media authorization.",
+      "state": [
+        "nvr_storage_used_percent",
+        "nvr_recording_health",
+        "nvr_camera_count",
+        "rtsps_available",
+        "snapshot_available",
+        "talkback_available",
+        "recording_retention_days"
+      ],
+      "events": [
+        "nvr.storage_warning",
+        "nvr.recording_degraded",
+        "recording.started",
+        "recording.completed"
+      ],
+      "conditions": [
+        "nvr_storage_above",
+        "recording_is_healthy"
+      ],
+      "actions": [
+        "create_rtsps_stream",
+        "delete_rtsps_stream",
+        "start_talkback",
+        "stop_talkback"
+      ]
+    },
+    {
+      "id": "websocket-health-and-recovery",
+      "status": "planned",
+      "scope": [
+        "protect-websocket-configurations"
+      ],
+      "source_refs": [
+        "unifi_protect",
+        "unifi_connector"
+      ],
+      "reason": "Update streams need cursoring, reconnect, deduplication, gap detection, reconciliation, and backpressure diagnostics.",
+      "state": [
+        "websocket_connected",
+        "websocket_lag_ms",
+        "event_queue_depth",
+        "event_queue_capacity",
+        "dropped_event_count",
+        "last_reconciled_at"
+      ],
+      "events": [
+        "websocket.connected",
+        "websocket.disconnected",
+        "websocket.gap_detected",
+        "events.resynchronized",
+        "event_queue.saturated"
+      ],
+      "conditions": [
+        "websocket_is_healthy",
+        "event_queue_below"
+      ],
+      "actions": [
+        "reconnect_websocket",
+        "resynchronize_events"
+      ]
+    },
+    {
+      "id": "administration-and-assets",
+      "status": "planned",
+      "scope": [
+        "administrator-authorized-sites"
+      ],
+      "source_refs": [
+        "unifi_protect"
+      ],
+      "reason": "Viewer, live-view, arm-profile, device asset, and application configuration changes need separate administrative authorization.",
+      "state": [
+        "viewer_count",
+        "arm_profile_count",
+        "device_asset_count"
+      ],
+      "events": [
+        "viewer.changed",
+        "arm_profile.changed"
+      ],
+      "conditions": [
+        "viewer_exists",
+        "arm_profile_is_active"
+      ],
+      "actions": [
+        "create_live_view",
+        "update_live_view",
+        "create_arm_profile",
+        "update_arm_profile",
+        "upload_device_asset"
+      ]
+    },
+    {
+      "id": "unsafe-or-sensitive-surface",
+      "status": "excluded",
+      "scope": [
+        "all-sites-devices-and-users"
+      ],
+      "source_refs": [
+        "unifi_protect",
+        "core_camera"
+      ],
+      "reason": "API keys, credentials, raw video URLs, biometric identity, PIN values, arbitrary relays, destructive deletion, and microphone disablement must not be exposed.",
+      "state": [
+        "api_key",
+        "camera_credentials",
+        "raw_rtsps_url",
+        "raw_face_embedding",
+        "raw_pin_value"
+      ],
+      "events": [],
+      "conditions": [],
+      "actions": [
+        "delete_console",
+        "delete_recording_archive",
+        "activate_arbitrary_relay",
+        "disable_camera_microphone_permanently",
+        "export_access_credentials",
+        "upload_arbitrary_file"
+      ]
+    }
+  ]
+}

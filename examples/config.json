@@ -1,0 +1,10 @@
+{
+  "id": "unifi-home",
+  "host": "https://192.168.1.1",
+  "alias": "Home UniFi",
+  "api_key": "change-me",
+  "verify_tls": true,
+  "application_scope": "both",
+  "poll_interval_seconds": 60,
+  "actions_enabled": false
+}

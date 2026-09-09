@@ -1,0 +1,141 @@
+{
+  "$schema": "./schema/piphi-manifest.schema.json",
+  "manifest_version": "1.0",
+  "id": "piphi-network-unifi-protect-access",
+  "name": "PiPhi Network UniFi Protect & Access",
+  "version": "0.1.0",
+  "description": "UniFi Protect and Access integration for cameras, detections, NVRs, doors, readers, intercoms, alarms, and access events.",
+  "metadata": {
+    "generator": "piphi-network-create",
+    "scaffold_version": "0.3.0",
+    "preset": "protocol-bridge",
+    "domain": "bridge",
+    "preset_summary": "Protocol bridge starter for translating an external local protocol."
+  },
+  "maintainer": {
+    "name": "PiPhi Network",
+    "website": "https://piphi.io"
+  },
+  "license": "Apache-2.0",
+  "image": "docker.io/piphinetwork/piphi-network-unifi-protect-access:0.1.0",
+  "platforms": [
+    "linux"
+  ],
+  "runtime": {
+    "linux": {
+      "type": "container",
+      "container": {
+        "image": "docker.io/piphinetwork/piphi-network-unifi-protect-access:0.1.0",
+        "ports": [
+          {
+            "container": 4227,
+            "host": 4227
+          }
+        ],
+        "environment": {
+          "LOG_LEVEL": "info"
+        },
+        "restart_policy": {
+          "name": "unless-stopped",
+          "maximum_retry_count": 0
+        }
+      },
+      "discovery": {
+        "method": "passive"
+      }
+    }
+  },
+  "api": {
+    "required": [
+      "health",
+      "entities",
+      "command",
+      "config",
+      "ui_config"
+    ],
+    "endpoints": {
+      "health": "/health",
+      "diagnostics": "/diagnostics",
+      "discover": "/discover",
+      "entities": "/entities",
+      "state": "/state",
+      "config": "/config",
+      "config_sync": "/config/sync",
+      "deconfigure": "/deconfigure",
+      "ui_config": "/ui-config",
+      "events": "/events",
+      "command": "/command"
+    }
+  },
+  "config": {
+    "source": "endpoint",
+    "endpoint": "/ui-config",
+    "required": true,
+    "editable_fields": [
+      "host",
+      "alias",
+      "api_key",
+      "verify_tls",
+      "application_scope",
+      "poll_interval_seconds",
+      "actions_enabled"
+    ],
+    "runtime_fields": [
+      "id",
+      "config_id",
+      "container_id",
+      "device_id"
+    ],
+    "identity_fields": [
+      "host"
+    ]
+  },
+  "identity": {
+    "fields": [
+      "host"
+    ]
+  },
+  "capabilities": {
+    "connected": {
+      "kind": "sensor",
+      "unit": "bool"
+    },
+    "refresh": {
+      "kind": "action"
+    }
+  },
+  "commands": {
+    "refresh": {
+      "description": "Refresh the integration state.",
+      "timeout_ms": 5000
+    }
+  },
+  "entities": [
+    {
+      "id": "unifi-protect-access-site",
+      "name": "UniFi Protect & Access Site",
+      "device_id": "unifi-protect-access-site",
+      "entity_type": "security_site",
+      "capabilities": [
+        "connected",
+        "refresh"
+      ],
+      "available_commands": [
+        {
+          "id": "refresh",
+          "label": "Refresh",
+          "kind": "action"
+        }
+      ],
+      "dashboard": {
+        "allowed_widgets": [
+          "camera",
+          "camera-events-card",
+          "access-control-card",
+          "device-health-card"
+        ],
+        "default_widget": "camera"
+      }
+    }
+  ]
+}
