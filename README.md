@@ -1,6 +1,6 @@
 # PiPhi Network UniFi Protect & Access
 
-UniFi Protect and Access integration for cameras, detections, NVRs, doors, readers, intercoms, alarms, and access events.
+UniFi Protect and Access integration for cameras, detections, NVRs, doors, readers, intercoms, alarms, and access events. The current provider slice performs HTTPS-only, API-key-authenticated, read-only discovery for Protect cameras, sensors, lights, sirens, relays, speakers, chimes, and viewers, and validates snapshot media types. See `capability-catalog.json` for the exhaustive implemented/planned/excluded inventory.
 
 This repository is a Scaffold CLI 0.3.0 development baseline. The runtime currently implements the secure PiPhi lifecycle foundation (`connected`, configuration events, and `refresh`). The complete known upstream surface is accounted for in [`capability-catalog.json`](capability-catalog.json); vendor/device behavior remains unadvertised until its implementation and executable tests are complete.
 
